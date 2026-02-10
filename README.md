@@ -1,1 +1,1 @@
-the website is live on https://maaamart.netlify.app/
+this website is live on https://maaamart.netlify.app/
