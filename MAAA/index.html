@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAAA Mart - Grocery Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo">
+                    <div class="logo">M</div>
+                    <h1>MAAA Mart</h1>
+                    <p>Grocery Management System</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label>Select User Type</label>
+                        <select id="userType" required>
+                            <option value="">Choose user type...</option>
+                            <option value="customer">Customer</option>
+                            <option value="staff">Staff</option>
+                            <option value="manager">Manager</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Enter password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-login">Login</button>
+                </form>
+                
+                <div class="demo-accounts">
+                    <h3>Demo Accounts:</h3>
+                    <div class="demo-grid">
+                        <div class="demo-card">
+                            <strong>Customer</strong>
+                            <p>user: customer</p>
+                            <p>pass: customer123</p>
+                        </div>
+                        <div class="demo-card">
+                            <strong>Staff</strong>
+                            <p>user: staff</p>
+                            <p>pass: staff123</p>
+                        </div>
+                        <div class="demo-card">
+                            <strong>Manager</strong>
+                            <p>user: manager</p>
+                            <p>pass: manager123</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Interface -->
+    <div id="customerPage" class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                🎉 Free delivery on orders above ₹500 | Same-day delivery available!
+            </div>
+            <div class="header-main">
+                <div class="logo-section">
+                    <div class="logo">M</div>
+                    <div class="logo-text">
+                        <h1>MAAA Mart</h1>
+                        <p>Fresh. Fast. Affordable.</p>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="customerSearch" placeholder="Search for products, brands, and more...">
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn">
+                        <span class="icon">👤</span>
+                        <span>Account</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleCart()">
+                        <span class="icon">🛒</span>
+                        <span>Cart</span>
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn logout-btn" onclick="logout()">
+                        <span class="icon">🚪</span>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="nav-container">
+                <button class="nav-link active">All Products</button>
+                <button class="nav-link">Offers</button>
+                <button class="nav-link">New Arrivals</button>
+                <button class="nav-link">My Orders</button>
+            </div>
+        </nav>
+
+        <!-- Banner -->
+        <section class="banner">
+            <div class="banner-content">
+                <div class="banner-text">
+                    <h2>Fresh Groceries at<br>Your Doorstep! 🚚</h2>
+                    <p>Shop from 1000+ products. Order now and get delivery within 2 hours.</p>
+                    <button class="cta-btn">Shop Now →</button>
+                </div>
+                <div class="banner-emoji">🥬🥛🍞</div>
+            </div>
+        </section>
+
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Category Filter -->
+            <div class="category-filter">
+                <button class="category-chip active" data-category="all">🏷️ All Categories</button>
+                <button class="category-chip" data-category="dairy">🥛 Dairy & Eggs</button>
+                <button class="category-chip" data-category="produce">🥬 Fresh Produce</button>
+                <button class="category-chip" data-category="bakery">🍞 Bakery</button>
+                <button class="category-chip" data-category="beverages">🥤 Beverages</button>
+                <button class="category-chip" data-category="snacks">🍪 Snacks</button>
+            </div>
+
+            <!-- Products Section -->
+            <div class="products-header">
+                <h3>All Products</h3>
+                <select class="sort-select">
+                    <option>Sort by: Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest First</option>
+                </select>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h3>Shopping Cart</h3>
+                <button class="close-cart" onclick="toggleCart()">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span style="color: var(--success);">FREE</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+                <button class="checkout-btn">Proceed to Checkout</button>
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    </div>
+
+    <!-- Staff Interface -->
+    <div id="staffPage" class="page">
+        <!-- Header -->
+        <header class="header staff-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">M</div>
+                    <div class="header-title">
+                        <h1>MAAA Mart</h1>
+                        <p>Inventory Management System</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">SK</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9375rem;">Staff User</div>
+                        <div style="font-size: 0.8125rem; color: var(--text-secondary);">Employee #E12345</div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card" style="border-left-color: var(--success);">
+                    <h3>In Stock Items</h3>
+                    <div class="value" style="color: var(--success);">234</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--warning);">
+                    <h3>Low Stock Items</h3>
+                    <div class="value" style="color: var(--warning);">18</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--danger);">
+                    <h3>Out of Stock</h3>
+                    <div class="value" style="color: var(--danger);">5</div>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--secondary);">
+                    <h3>Total Products</h3>
+                    <div class="value" style="color: var(--secondary);">257</div>
+                </div>
+            </div>
+
+            <!-- Search and Filter Controls -->
+            <div class="controls">
+                <div class="controls-row">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="staffSearchInput" placeholder="Search by product name, supplier, or category...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="staffCategoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="dairy">Dairy & Eggs</option>
+                            <option value="produce">Fresh Produce</option>
+                            <option value="bakery">Bakery</option>
+                            <option value="beverages">Beverages</option>
+                            <option value="snacks">Snacks</option>
+                        </select>
+                        <select id="staffStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Supplier</th>
+                            <th>Current Stock</th>
+                            <th>Min. Level</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Restock Modal -->
+        <div class="modal" id="restockModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Restock Item</h2>
+                    <button class="close-btn" onclick="closeRestockModal()">×</button>
+                </div>
+                <form id="restockForm">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="restockProductName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity to Add</label>
+                        <input type="number" id="restockQuantity" placeholder="Enter quantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier Contact</label>
+                        <input type="text" id="supplierContact" placeholder="Supplier reference or PO number">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeRestockModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Confirm Restock</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manager Interface -->
+    <div id="managerPage" class="page">
+        <!-- Header -->
+        <header class="header manager-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">M</div>
+                    <div class="header-title">
+                        <h1>MAAA Mart Manager</h1>
+                        <p>Advanced Analytics & Control Panel</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">RK</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 1rem;">Rajesh Kumar</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Store Manager</div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <div class="nav-tabs-container">
+                <button class="tab active" onclick="switchManagerTab('dashboard')">📊 Dashboard</button>
+                <button class="tab" onclick="switchManagerTab('inventory')">📦 Inventory Analytics</button>
+                <button class="tab" onclick="switchManagerTab('employees')">👥 Employee Management</button>
+                <button class="tab" onclick="switchManagerTab('suppliers')">🏭 Supplier Relations</button>
+                <button class="tab" onclick="switchManagerTab('orders')">🛒 Order History</button>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <div class="container">
+            <!-- Dashboard Tab -->
+            <div id="manager-dashboard" class="tab-content active">
+                <!-- Stats Grid -->
+                <div class="stats-grid manager-stats">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3>Total Revenue</h3>
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">₹</div>
+                        </div>
+                        <div class="value" style="color: var(--success);">₹8,45,230</div>
+                        <div class="stat-trend trend-up">↑ 12.5% vs last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3>Orders Today</h3>
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--info);">🛒</div>
+                        </div>
+                        <div class="value" style="color: var(--info);">342</div>
+                        <div class="stat-trend trend-up">↑ 8.2% vs yesterday</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3>Avg Order Value</h3>
+                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--secondary);">💰</div>
+                        </div>
+                        <div class="value" style="color: var(--secondary);">₹1,247</div>
+                        <div class="stat-trend trend-up">↑ 5.1% vs last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <h3>Active Staff</h3>
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">👤</div>
+                        </div>
+                        <div class="value" style="color: var(--warning);">18/22</div>
+                        <div class="stat-trend" style="color: var(--text-secondary);">On duty now</div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3>Sales Trends (Last 7 Days)</h3>
+                        <div class="chart-placeholder">📈 Sales chart visualization would appear here</div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top Categories</h3>
+                        <div class="chart-placeholder">🥧 Category breakdown pie chart</div>
+                    </div>
+                </div>
+
+                <!-- Top Products Table -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Top Selling Products (This Week)</h3>
+                        <button class="btn btn-secondary btn-sm">Export Report</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Units Sold</th>
+                                <th>Revenue</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#1</strong></td>
+                                <td>Amul Gold Milk</td>
+                                <td>Dairy & Eggs</td>
+                                <td>1,245</td>
+                                <td>₹68,475</td>
+                                <td><span class="badge badge-success">+15%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#2</strong></td>
+                                <td>Fresh Tomatoes</td>
+                                <td>Produce</td>
+                                <td>892</td>
+                                <td>₹35,680</td>
+                                <td><span class="badge badge-success">+8%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#3</strong></td>
+                                <td>Britannia Bread</td>
+                                <td>Bakery</td>
+                                <td>756</td>
+                                <td>₹30,240</td>
+                                <td><span class="badge badge-warning">-2%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Inventory Analytics Tab -->
+            <div id="manager-inventory" class="tab-content">
+                <div class="stats-grid manager-stats">
+                    <div class="stat-card">
+                        <h3>Inventory Value</h3>
+                        <div class="value" style="color: var(--primary);">₹12.4L</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Low Stock Items</h3>
+                        <div class="value" style="color: var(--warning);">18</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Out of Stock</h3>
+                        <div class="value" style="color: var(--danger);">5</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Reorder Needed</h3>
+                        <div class="value" style="color: var(--info);">23</div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3>Inventory Turnover Rate</h3>
+                        <div class="chart-placeholder">📊 Inventory turnover visualization</div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Stock Levels by Category</h3>
+                        <div class="chart-placeholder">📊 Stock distribution chart</div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Critical Stock Alerts</h3>
+                        <button class="btn btn-primary btn-sm">Generate Purchase Orders</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Min Level</th>
+                                <th>Supplier</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lays Classic Chips</td>
+                                <td style="color: var(--danger); font-weight: 700;">0</td>
+                                <td>60</td>
+                                <td>PepsiCo India</td>
+                                <td><button class="btn btn-primary btn-sm">Order Now</button></td>
+                            </tr>
+                            <tr>
+                                <td>Mother Dairy Curd</td>
+                                <td style="color: var(--warning); font-weight: 700;">18</td>
+                                <td>35</td>
+                                <td>Mother Dairy</td>
+                                <td><button class="btn btn-primary btn-sm">Order Now</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Employee Management Tab -->
+            <div id="manager-employees" class="tab-content">
+                <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.5rem;">Team Overview</h2>
+                    <button class="btn btn-primary">+ Add New Employee</button>
+                </div>
+
+                <div class="employee-grid">
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">SK</div>
+                            <div class="employee-info">
+                                <h4>Suresh Kumar</h4>
+                                <p>Staff • E12345</p>
+                            </div>
+                        </div>
+                        <div><span class="badge badge-success">Active</span></div>
+                        <div class="employee-stats">
+                            <div class="employee-stat">
+                                <div class="label">Orders</div>
+                                <div class="value">145</div>
+                            </div>
+                            <div class="employee-stat">
+                                <div class="label">Shift</div>
+                                <div class="value">Day</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">PM</div>
+                            <div class="employee-info">
+                                <h4>Priya Mehta</h4>
+                                <p>Staff • E12346</p>
+                            </div>
+                        </div>
+                        <div><span class="badge badge-success">Active</span></div>
+                        <div class="employee-stats">
+                            <div class="employee-stat">
+                                <div class="label">Orders</div>
+                                <div class="value">132</div>
+                            </div>
+                            <div class="employee-stat">
+                                <div class="label">Shift</div>
+                                <div class="value">Day</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">AS</div>
+                            <div class="employee-info">
+                                <h4>Amit Singh</h4>
+                                <p>Staff • E12347</p>
+                            </div>
+                        </div>
+                        <div><span class="badge badge-info">Off Duty</span></div>
+                        <div class="employee-stats">
+                            <div class="employee-stat">
+                                <div class="label">Orders</div>
+                                <div class="value">98</div>
+                            </div>
+                            <div class="employee-stat">
+                                <div class="label">Shift</div>
+                                <div class="value">Night</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supplier Relations Tab -->
+            <div id="manager-suppliers" class="tab-content">
+                <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.5rem;">Active Suppliers</h2>
+                    <button class="btn btn-primary">+ Add Supplier</button>
+                </div>
+
+                <div class="supplier-list">
+                    <div class="supplier-item">
+                        <div class="supplier-details">
+                            <h4>Amul Dairy</h4>
+                            <div class="supplier-meta">
+                                <span>📦 42 Products</span>
+                                <span>📞 +91 98765 43210</span>
+                                <span>⭐ 4.8 Rating</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary btn-sm">View Details</button>
+                            <button class="btn btn-primary btn-sm">New Order</button>
+                        </div>
+                    </div>
+
+                    <div class="supplier-item">
+                        <div class="supplier-details">
+                            <h4>Local Farms Co.</h4>
+                            <div class="supplier-meta">
+                                <span>📦 28 Products</span>
+                                <span>📞 +91 98765 43211</span>
+                                <span>⭐ 4.6 Rating</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary btn-sm">View Details</button>
+                            <button class="btn btn-primary btn-sm">New Order</button>
+                        </div>
+                    </div>
+
+                    <div class="supplier-item">
+                        <div class="supplier-details">
+                            <h4>Britannia Foods</h4>
+                            <div class="supplier-meta">
+                                <span>📦 35 Products</span>
+                                <span>📞 +91 98765 43212</span>
+                                <span>⭐ 4.9 Rating</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary btn-sm">View Details</button>
+                            <button class="btn btn-primary btn-sm">New Order</button>
+                        </div>
+                    </div>
+
+                    <div class="supplier-item">
+                        <div class="supplier-details">
+                            <h4>PepsiCo India</h4>
+                            <div class="supplier-meta">
+                                <span>📦 52 Products</span>
+                                <span>📞 +91 98765 43213</span>
+                                <span>⭐ 4.7 Rating</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary btn-sm">View Details</button>
+                            <button class="btn btn-primary btn-sm">New Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="manager-orders" class="tab-content">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Recent Orders</h3>
+                        <button class="btn btn-secondary btn-sm">Export CSV</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date & Time</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#ORD-2456</strong></td>
+                                <td>Rahul Sharma</td>
+                                <td>Feb 10, 2:45 PM</td>
+                                <td>8</td>
+                                <td>₹1,245</td>
+                                <td><span class="badge badge-success">Paid</span></td>
+                                <td><span class="badge badge-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2455</strong></td>
+                                <td>Anita Patel</td>
+                                <td>Feb 10, 2:30 PM</td>
+                                <td>5</td>
+                                <td>₹892</td>
+                                <td><span class="badge badge-success">Paid</span></td>
+                                <td><span class="badge badge-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2454</strong></td>
+                                <td>Vikram Singh</td>
+                                <td>Feb 10, 2:15 PM</td>
+                                <td>12</td>
+                                <td>₹2,156</td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                                <td><span class="badge badge-info">Processing</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
